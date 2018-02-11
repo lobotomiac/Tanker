@@ -24,10 +24,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// how long , in seconds, will the timer run
 	UPROPERTY(EditAnywhere)
 	int32 CountdownTime;
-	
+
 	UTextRenderComponent* CountdownText;
 
+	// changing timer value
 	void UpdateTimerDisplay();
+
+	void AdvanceTimer();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void CountdownHasFinished();
+	virtual void CountdownHasFinished_Implementation();
+
+	FTimerHandle CountdownTimerHandle;
+	
 };
