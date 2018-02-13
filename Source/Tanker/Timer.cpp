@@ -27,6 +27,7 @@ void ATimer::BeginPlay()
 	
 }
 
+
 // Called every frame
 void ATimer::Tick(float DeltaTime)
 {
