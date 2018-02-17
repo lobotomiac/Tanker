@@ -8,69 +8,91 @@
 // Sets default values
 AWanderer::AWanderer()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	CountdownText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("CountdownNumber"));
 	CountdownText->SetHorizontalAlignment(EHTA_Center);
 	CountdownText->SetWorldSize(150.0f);
 	RootComponent = CountdownText;
+
+	GoFromStartIn = 3;
+	BackToStartIn = 5;
+
+	WanderDistance = 200;
 }
 
 // Called when the game starts or when spawned
 void AWanderer::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 
-	UpdateTimerDisplay();
+	UpdateTimerDisplay(GoFromStartIn);
 	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::AdvanceTimer, 1.0f, true);
-	StartLocation = GetActorLocation();
-	NewLocation = StartLocation;
+
+	UpdateTimerDisplay(BackToStartIn);
+	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::RetreatTimer, 1.0f, true);
+
 }
 
 // Called every frame
 void AWanderer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
-
-void AWanderer::UpdateTimerDisplay()
+void AWanderer::UpdateTimerDisplay(int time)
 {
-    CountdownText->SetText(FString::FromInt(FMath::Max(CountdownTime, 0)));
+	CountdownText->SetText(FString::FromInt(FMath::Max(time, 0)));
 }
-
 
 void AWanderer::AdvanceTimer()
 {
-	--CountdownTime;
-	UpdateTimerDisplay();
-	if (CountdownTime < 1)
+	--GoFromStartIn;
+	UpdateTimerDisplay(GoFromStartIn);
+	if (GoFromStartIn < 1)
 	{
 		// We're done counting down, so stop running the timer.
 		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
 		//Perform any special actions we want to do when the timer ends.
-		CountdownHasFinished();
+		MoveActorFromStart();
 	}
 }
 
-void AWanderer::CountdownHasFinished_Implementation()
+void AWanderer::MoveActorFromStart_Implementation()
 {
-	if (NewLocation == StartLocation)
-	{
-		NewLocation.X += 100;
-		SetActorLocation(NewLocation);
+	FVector StartLocation = GetActorLocation();
+	FVector NewLocation;
+	NewLocation.X = StartLocation.X + WanderDistance;
 
-		CountdownTime = 5;
-		UpdateTimerDisplay();
-		GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::AdvanceTimer, 1.0f, true);
-	}
-	else
-	{
-		SetActorLocation(StartLocation);
-	}
-	
+	SetActorLocation(NewLocation);
+
+
 }
 
-// TODO make a second event to move Actor back to start
-// TODO make both timer values & both to be exposed
+
+void AWanderer::RetreatTimer()
+{
+	--BackToStartIn;
+	UpdateTimerDisplay(BackToStartIn);
+	if (BackToStartIn < 1)
+	{
+		// We're done counting down, so stop running the timer.
+		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
+		//Perform any special actions we want to do when the timer ends.
+		MoveActorToStart();
+	}
+}
+
+void AWanderer::MoveActorToStart_Implementation()
+{
+	FVector StartLocation = GetActorLocation();
+	FVector NewLocation;
+	NewLocation.X = StartLocation.X - WanderDistance;
+
+	SetActorLocation(NewLocation);
+
+	UpdateTimerDisplay(BackToStartIn);
+}
+

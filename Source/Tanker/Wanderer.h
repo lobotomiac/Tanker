@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "App.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
 #include "Wanderer.generated.h"
@@ -26,19 +25,29 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
-	int32 CountdownTime = 3;
+	int32 GoFromStartIn;
 
-	FVector StartLocation, NewLocation;
+	UPROPERTY(EditAnywhere)
+	int32 BackToStartIn;
+
+	UPROPERTY(EditAnywhere)
+	float WanderDistance;
 
 	UTextRenderComponent* CountdownText;
 
-	void UpdateTimerDisplay();
+	void UpdateTimerDisplay(int time);
 
 	void AdvanceTimer();
 
+	void RetreatTimer();
+
 	UFUNCTION(BlueprintNativeEvent)
-	void CountdownHasFinished();
-	virtual void CountdownHasFinished_Implementation();
+	void MoveActorFromStart();
+	virtual void MoveActorFromStart_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void MoveActorToStart();
+	virtual void MoveActorToStart_Implementation();
 
 	FTimerHandle CountdownTimerHandle;
 };
