@@ -29,7 +29,6 @@ void ATutorialPawn::BeginPlay()
 void ATutorialPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -46,6 +45,7 @@ void ATutorialPawn::MoveForward(float value)
 	AddMovementInput(GetActorForwardVector(), value);
 }
 
+// Left & Right movement component
 void ATutorialPawn::MoveRight(float value)
 {
 	AddMovementInput(GetActorRightVector(), value);

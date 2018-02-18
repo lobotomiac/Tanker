@@ -30,9 +30,6 @@ void AWanderer::BeginPlay()
 	UpdateTimerDisplay(GoFromStartIn);
 	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::AdvanceTimer, 1.0f, true);
 
-	UpdateTimerDisplay(BackToStartIn);
-	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::RetreatTimer, 1.0f, true);
-
 }
 
 // Called every frame
@@ -54,7 +51,7 @@ void AWanderer::AdvanceTimer()
 	if (GoFromStartIn < 1)
 	{
 		// We're done counting down, so stop running the timer.
-		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
+		GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::AdvanceTimer, 0.0f, true, 2.0f);
 		//Perform any special actions we want to do when the timer ends.
 		MoveActorFromStart();
 	}
@@ -64,11 +61,12 @@ void AWanderer::MoveActorFromStart_Implementation()
 {
 	FVector StartLocation = GetActorLocation();
 	FVector NewLocation;
-	NewLocation.X = StartLocation.X + WanderDistance;
+	NewLocation.Z = StartLocation.Z + WanderDistance;
 
 	SetActorLocation(NewLocation);
 
-
+	UpdateTimerDisplay(BackToStartIn);
+	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this, &AWanderer::RetreatTimer, 1.0f, true);
 }
 
 
@@ -89,7 +87,7 @@ void AWanderer::MoveActorToStart_Implementation()
 {
 	FVector StartLocation = GetActorLocation();
 	FVector NewLocation;
-	NewLocation.X = StartLocation.X - WanderDistance;
+	NewLocation.Z = StartLocation.Z - WanderDistance;
 
 	SetActorLocation(NewLocation);
 
