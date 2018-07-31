@@ -24,4 +24,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float ScalingFactor;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ObjectMesh = nullptr;
+
 };

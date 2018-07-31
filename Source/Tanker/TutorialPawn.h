@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "TutorialPawn.generated.h"
 
 UCLASS()
@@ -17,11 +18,14 @@ public:
 	ATutorialPawn();
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* CubeMesh;
+	UStaticMeshComponent* CubeMesh = nullptr;
 
-	UPROPERTY(EditAnywhere)
-	UCameraComponent* CameraMesh;
-	
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UCameraComponent* Camera = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	USpringArmComponent* SpringArm = nullptr;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

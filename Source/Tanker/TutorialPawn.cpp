@@ -14,8 +14,13 @@ ATutorialPawn::ATutorialPawn()
 	CreateDefaultSubobject<UFloatingPawnMovement>("PawnMovement");
 
 	CubeMesh = CreateDefaultSubobject<UStaticMeshComponent>("CubeMesh");
-	CameraMesh = CreateDefaultSubobject<UCameraComponent>("CameraMesh");
+	SetRootComponent(CubeMesh);
 
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
+	SpringArm->SetupAttachment(CubeMesh);
+	
+	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	Camera->SetupAttachment(SpringArm);	
 }
 
 // Called when the game starts or when spawned
